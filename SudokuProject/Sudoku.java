@@ -51,6 +51,9 @@ public class Sudoku{
         }
     
         class StartPanel extends JPanel{
+        	
+        	String imageName = "";
+        	Image chemImage;
             JButton clickToPlay;
         
             public StartPanel(){
@@ -58,13 +61,28 @@ public class Sudoku{
                 setButtonForInstructions();
                 ButtonListenerToInstructions bli = new ButtonListenerToInstructions();
                 clickToPlay.addActionListener(bli); 
+                
+                readImage();
             }
+            
+            public void readImage(){    //This method reads the image loaded on this panel. 
+        		imageName = "5936876.png";
+        		try{
+        		    chemImage = ImageIO.read(new File(imageName));		
+        		}catch(IOException e){
+        		    System.err.println("ERROR: Cannot read the image file." + e);
+        		    System.exit(1);
+        		}
+        	    }
+ 
         
              public void paintComponent(Graphics g){
                 super.paintComponent(g);
                 g.setFont(new Font("Arial", Font.BOLD, 50));
-                g.setColor(Color.GREEN);
-                g.drawString("Sudoku", 200, 200);
+                g.setColor(Color.BLACK);
+                g.drawString("SUDO-CHEM", 150, 100);
+                
+        		g.drawImage(chemImage, 100, 170, 400, 400, this);
             
             }
          
@@ -127,7 +145,10 @@ public class Sudoku{
                     {2,7,3,9,2,8,4,6,5}
              };
             
+           
+            
             Boolean isModifiable[][] = new Boolean[9][9];
+            Boolean repeat [][] = new Boolean[9][9];
             
             
             int width;
@@ -157,10 +178,20 @@ public class Sudoku{
                     }
                 }   
                 
+                for(int i=0;i<9; i++){
+                    for(int j=0; j<9; j++){
+                        if(BoardCopy[i][j]==0)
+                            repeat[i][j] = false;
+                        else
+                        	 repeat[i][j] = true;
+                    }
+                }   
+                
+                
                 setLayout(null);
                 userInput = new JTextField(30);
                 userInput.setText("Enter the row #, column #, and number in format xxx:");
-                userInput.setBounds(2, 630, 365, 25);
+                userInput.setBounds(2, 630, 355, 25);
                 userInput.addActionListener(this);
                 add(userInput);
                 userInput.requestFocusInWindow();
@@ -273,8 +304,10 @@ public class Sudoku{
                 
                 if(userInputString.length() == 3){
                     separateInput();
-                    if (checkIfLegal() && isModifiable[userRow-1][userColumn-1])
+                    if (checkIfLegal() && isModifiable[userRow-1][userColumn-1] &&!repeat[userRow-1][userColumn-1]){
                         g.drawString(Integer.toString(userNumber),(int)(width*(userColumn-1)/9) + 30, (int)(height*(userRow-1)/9) + 50 );
+                        repeat[userRow-1][userColumn-1] = true;
+                    }
 
                 }
                      
@@ -302,8 +335,10 @@ public class Sudoku{
             
             public void updatePoints(){
             	//System.out.println(isModifiable[userRow-1][userColumn-1]);
-                if(checkIfLegal() && isModifiable[userRow-1][userColumn-1])
+                if(checkIfLegal() && isModifiable[userRow-1][userColumn-1]&&!repeat[userRow-1][userColumn-1]){
                     points +=10;
+                    repeat[userRow-1][userColumn-1] = true;
+                }
                
                 else if(!checkIfLegal() && isModifiable[userRow-1][userColumn-1]){
                     points -= 50;
@@ -325,20 +360,22 @@ public class Sudoku{
                 JTextArea question = new JTextArea(questions[counterWrong%31]);
                 
                 questionsPanel = new JPanel();
-                questionsPanel.setPreferredSize(new Dimension(500, 300));
+                questionsPanel.setBackground(Color.ORANGE);
+                questionsPanel.setPreferredSize(new Dimension(200, 150));
                 questionsPanel.setForeground(Color.blue);
-                questionsPanel.setBounds(100, 200, 600, 400);
+                questionsPanel.setBounds(160, 210, 300, 200);
                 questionsPanel.setVisible(true);
                 add(questionsPanel);
                 
                 question.setLineWrap(true);
                 question.setWrapStyleWord(true);
-                question.setBounds(200, 200, 400, 200);
+                question.setBounds(200, 200, 200, 300);
+                question.setBackground(Color.ORANGE);
                 questionsPanel.add(question);
                 question.setText(questions[counterWrong]);
                 question.setFont(new Font(("SansSerif"), Font.PLAIN,18));
 
-                answer.setPreferredSize(new Dimension(500, 300));
+                answer.setPreferredSize(new Dimension(300, 50));
                 answer.setBounds(25, 315, 100, 25);
                 answer.addActionListener(this);
                 questionsPanel.add(answer);
@@ -351,6 +388,7 @@ public class Sudoku{
             
                 if(e.getSource() == userInput){
                     userInputString = userInput.getText(); 
+                    userInput.setText("");
                     separateInput();
                     updatePoints(); 
                 }
@@ -414,5 +452,7 @@ public class Sudoku{
     	}
 }
      
+
+  
 
   

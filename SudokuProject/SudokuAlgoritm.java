@@ -29,6 +29,8 @@ public class SudokuAlgorithm{
     
     
     public static void main(String[] args) throws IOException{
+        Random rn = new Random();
+        
         BufferedReader br = new BufferedReader(new FileReader("Questions.txt"));
         StringTokenizer st = new StringTokenizer(br.readLine());
        
@@ -37,7 +39,7 @@ public class SudokuAlgorithm{
         String[] questions = new String[n];
         for(int i = 0; i < n; i++){
             String qIndex = br.readLine();
-            questions[i] = qIndex;
+            questions[i] = qIndex.toLowerCase();
             System.out.println(questions[i]);
         }
  
@@ -45,9 +47,11 @@ public class SudokuAlgorithm{
         String[] answers = new String[n];
         for(int j = 0; j < n; j++){
             String AIndex = ba.readLine();
-            answers[j] = AIndex;
+            answers[j] = AIndex.toLowerCase();
             System.out.println(answers[j]);
         }
+        
+        boolean[] questionsB = new boolean[n]; //preset to false
         
         
         int[][] Board = new int[][]{
@@ -62,7 +66,7 @@ public class SudokuAlgorithm{
             {2,0,3,9,0,0,0,6,0}
         };
         
-        
+        int randomNum = -1;
         while(true){
             Scanner loc = new Scanner(System.in);
             System.out.println("Row of desired location to edit: ");
@@ -80,7 +84,30 @@ public class SudokuAlgorithm{
                 
                 else{
                     Board[row-1][col-1] = ans;
-                    System.out.println("Your answer is incorrect. Please answer a question to continue:");
+                    System.out.println("Your answer is incorrect. Please answer the question to continue:");
+                //Insert Implementation Here **********
+                    boolean stopSearch = true;
+                    int numChoose = -1;
+                    while(stopSearch){
+                        randomNum = rn.nextInt(n);
+                        if(questionsB[randomNum] == false){
+                            questionsB[randomNum] = true;
+                            stopSearch = false;
+                        }
+                    }
+                    System.out.println("trigger");
+                    System.out.println(questions[randomNum]);
+                    Scanner responseScan = new Scanner(System.in);
+                    String response = responseScan.nextLine();  
+                    if(response.equals(answers[randomNum])){
+                        System.out.println("Correct! The number has now been filled in for you. The number was " + Key[row-1][col-1]);
+                        Board[row-1][col-1] = Key[row-1][col-1];
+                    }
+                    else
+                    {
+                        System.out.println("Incorrect Answer. The answer was " + answers[randomNum]);
+                    }
+                    
                 }
                
             }

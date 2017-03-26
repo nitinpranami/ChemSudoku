@@ -7,8 +7,10 @@ import javax.swing.event.*;
 import java.util.Random;	
 import java.io.*; 
 import java.util.Scanner;
+import java.util.*;
 
 import javax.imageio.*;
+
 
 
 public class Sudoku{
@@ -80,11 +82,10 @@ public class Sudoku{
 		}
 	
 		class GamePanel extends JPanel implements ActionListener{
-	
-			JTextField userRowInput; 
-			JTextField userColumnInput; 
-			JTextField userNumberInput; 
+
 			
+	
+			JTextField userInput; 
 			
 			int [] xGrid = new int[10];        
 		    int [] yGrid = new int[10];  
@@ -100,42 +101,100 @@ public class Sudoku{
 		            {2,0,3,9,0,0,0,6,0}
 		     };
 		    
+		    int[][] Key = new int[][]{
+		    		{5,6,2,8,9,4,7,1,3},
+				    {4,1,8,3,2,7,5,9,6},
+				    {3,9,7,6,5,1,8,4,2},
+				    {6,4,9,7,3,5,1,2,8},
+				    {7,2,5,1,8,6,9,3,4},
+				    {8,3,1,2,4,9,6,5,7},
+				    {9,5,6,4,7,2,3,8,1},
+				    {1,8,4,5,6,3,2,7,9},
+				    {2,7,3,9,2,8,4,6,5}
+		     };
+		    
 		    int width;
 			int height;
 			String number;
+			String userInputString = "";
 			int userRow;
 			int userColumn;
 			int userNumber;
-			
+			int points = 0;
+			int legalCounter = 0;
+			int notLegalCounter = 0;
+			String [] questions = new String [31];
+			String [] answers = new String [31];
+
 			public GamePanel(){
 				
 				setLayout(null);
-				userRowInput = new JTextField(30);
-				userRowInput.setText("Row number:");
-				userRowInput.setBounds(85, 630, 100, 25);
-				userRowInput.addActionListener(this);
-				add(userRowInput);
-				userRowInput.requestFocusInWindow();
+				userInput = new JTextField(30);
+				userInput.setText("Row number:");
+				userInput.setBounds(85, 630, 100, 25);
+				userInput.addActionListener(this);
+				add(userInput);
+				userInput.requestFocusInWindow();
 				
-				userColumnInput = new JTextField(30);
-				userColumnInput.setText("Column number:");
-				userColumnInput.setBounds(200, 630, 100, 25);
-				userColumnInput.addActionListener(this);
-				add(userColumnInput);
-				
-				userNumberInput = new JTextField(30);
-				userNumberInput.setText("Number:");
-				userNumberInput.setBounds(315, 630, 100, 25);
-				userNumberInput.addActionListener(this);
-				add(userNumberInput);		
+				readQuestionsAndAnswers(questions, answers);
 				
 				
 			}
 			
+			
+			 public void readQuestionsAndAnswers(String [] ques, String [] ans) { 
+					Scanner questionsFile=null;
+					try{				
+					    questionsFile = new Scanner(new File("Questions.txt"));
+					}catch(FileNotFoundException e){
+					    System.err.println("File Questions.txt not found ");
+					    System.exit(1);
+					}
+					int index = 0;	
+					while(index < 31 && questionsFile.hasNext()) {
+						questions[index] = questionsFile.nextLine();
+						System.out.println(questions[index]);
+					    index++;
+					}
+					try {
+					    questionsFile.close();
+					} catch (Exception e) {
+					    System.out.println("Error writing players.txt: " + e);
+					    System.exit(1);
+					}
+					
+					Scanner answersFile=null;
+					try{				
+					    answersFile = new Scanner(new File("Answers.txt"));
+					}catch(FileNotFoundException e){
+					    System.err.println("File Answers.txt not found ");
+					    System.exit(1);
+					}
+					int counterA = 0;	
+					while(counterA < 31 && answersFile.hasNext()) {
+						answers[counterA] = answersFile.nextLine();
+						System.out.println(answers[counterA]);
+					    counterA++;
+					}
+					try {
+					    answersFile.close();
+					} catch (Exception e) {
+					    System.out.println("Error writing players.txt: " + e);
+					    System.exit(1);
+					}			
+			 }
+			
 		 	public void paintComponent(Graphics g){
-				
+		 		repaint();
+				super.paintComponent(g);
 				width = this.getWidth();
 				height = this.getHeight() - 50;
+				
+				g.setFont(new Font("Arial", Font.BOLD, 50));
+				g.setColor(Color.BLUE);
+				g.drawString("Points: " + Integer.toString(points), 350, 660);
+				
+			
 			
 				g.setColor(Color.black);
 			
@@ -161,25 +220,76 @@ public class Sudoku{
 							 g.setFont(new Font("Arial", Font.BOLD, 30));
 							 g.drawString(number,(int)(width*j/9) + 30, (int)(height*i/9) + 50 );
 						 }
+						
 					 }
 				 }
-		 	}		
-			
-		 	public void actionPerformed(ActionEvent e) {
-		 		if(e.getSource() == userRowInput)
-		 			userRow = Integer.parseInt(userRowInput.getText());  
-				
-		 		if(e.getSource() == userColumnInput)
-		 			userColumn = Integer.parseInt(userColumnInput.getText()); 
 					
-				if(e.getSource() == userNumberInput)
-					userNumber = Integer.parseInt(userNumberInput.getText()); 
-						
-				System.out.println(userRow);
-				System.out.println(userColumn);
-				System.out.println(userNumber);
-			}
+				g.setFont(new Font("Arial", Font.BOLD, 30));
+				
+				if(userInputString.length() == 3){
+					separateInput();
+					 
+					// if(userRow != 0 && userColumn != 0){
+					 	
+						g.drawString(Integer.toString(userNumber),(int)(width*(userColumn-1)/9) + 30, (int)(height*(userRow-1)/9) + 50 );
+												
+					// }
+				}
+				
+					/*userRow = 0;
+					userColumn = 0;
+					userNumber = 0;
+					*/
+								 
+		 	}	
+		 	public void separateInput(){
+		 		legalCounter = 0;
+		 		notLegalCounter = 0;
+		 		userRow = Integer.parseInt(userInputString.substring(0,1));
+		 		userColumn = Integer.parseInt(userInputString.substring(1,2));
+		 		userNumber = Integer.parseInt(userInputString.substring(2,3));
+		 	}
+		 	
+		 	public boolean checkIfLegal(){
+		 		Board[userRow-1][userColumn-1] = userNumber;
+		 		System.out.println(Board[userRow-1][userColumn-1] + " " + Key[userRow-1][userColumn-1]);
+		 		if(Board[userRow-1][userColumn-1] == Key[userRow-1][userColumn-1]){
+		 			
+		 			//legalCounter+=1;
+		 			return true;
+		 			
+		 		}
+		 		else{
+		 			
+		 			//notLegalCounter+=1;
+		 			return false;
+		 		}
+
+		
+		 	
+		 	}
+		 	
+		 	public void updatePoints(){
+		 		System.out.println(checkIfLegal());
+		 		if(checkIfLegal())
+		 			points +=10;
+		 		else if(!checkIfLegal())
+		 			points -= 50;
+		 	}
+		 	
+		 	
+		 	
+		 	public void actionPerformed(ActionEvent e) {
+		 		if(e.getSource() == userInput){
+		 			userInputString = userInput.getText();  
+		 		}
+				separateInput();
+		 		updatePoints();
+			}		 	
 		}
 	}	
 }
 	
+		
+
+

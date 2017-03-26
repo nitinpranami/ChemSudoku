@@ -122,9 +122,11 @@ public class Sudoku{
 			int userNumber;
 			int points = 0;
 			int legalCounter = 0;
+			int counterWrong = 0;
 			int notLegalCounter = 0;
 			String [] questions = new String [31];
 			String [] answers = new String [31];
+			JPanel questionsPanel;
 
 			public GamePanel(){
 				
@@ -254,18 +256,11 @@ public class Sudoku{
 		 		Board[userRow-1][userColumn-1] = userNumber;
 		 		System.out.println(Board[userRow-1][userColumn-1] + " " + Key[userRow-1][userColumn-1]);
 		 		if(Board[userRow-1][userColumn-1] == Key[userRow-1][userColumn-1]){
-		 			
-		 			//legalCounter+=1;
-		 			return true;
-		 			
+		 			return true;		 			
 		 		}
 		 		else{
-		 			
-		 			//notLegalCounter+=1;
 		 			return false;
 		 		}
-
-		
 		 	
 		 	}
 		 	
@@ -273,12 +268,22 @@ public class Sudoku{
 		 		System.out.println(checkIfLegal());
 		 		if(checkIfLegal())
 		 			points +=10;
-		 		else if(!checkIfLegal())
+		 		else if(!checkIfLegal()){
 		 			points -= 50;
+		 			counterWrong += 1;
+		 			popUpQuestions();
+		 		}
+		 		//marker
+		 		System.out.println(questions[counterWrong % 31 - 1]);
 		 	}
 		 	
+		 	public void popUpQuestions(){
+		 		System.out.println("entered");
+		 		questionsPanel = new JPanel();
+		 		add(questionsPanel);
+		 	}
 		 	
-		 	
+		 		 	
 		 	public void actionPerformed(ActionEvent e) {
 		 		if(e.getSource() == userInput){
 		 			userInputString = userInput.getText();  
@@ -289,6 +294,11 @@ public class Sudoku{
 		}
 	}	
 }
+	
+		
+
+
+
 	
 		
 

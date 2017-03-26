@@ -1,7 +1,7 @@
 <snippet>
   <content>
   <![CDATA[
-# ${1:Chem-Sudoku}
+# ${1:Sudo-Chem}
 
 Like your ordinary Sudoku game, this project requires you to answer a chemistry question if you insert the wrong value. 
 Incorrect answers would result in further point deductions while correct answers will result in positive impact on your score. 

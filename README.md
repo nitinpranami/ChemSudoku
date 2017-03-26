@@ -1,11 +1,15 @@
 <snippet>
-  <content><![CDATA[
+  <content>
+  <![CDATA[
 # ${1:Chem-Sudoku}
-Like your ordinary Sudoku game, this project requires you to answer a chemistry question if you insert the wrong value. Incorrect answers would result in further point deductions while correct answers will result in positive impact on your score. 
+
+Like your ordinary Sudoku game, this project requires you to answer a chemistry question if you insert the wrong value. 
+Incorrect answers would result in further point deductions while correct answers will result in positive impact on your score. 
+
 ## Installation and Usage
+
 Java is required to run Chem-Sudoku. Download the entire repository, and run Sudoku.java. 
-## History
-TODO: Write history
+
 ## Credits
 Created by Mohini Banerjee (MVHS), Shirlyn Tang (MVHS), Tiffany Tsang (MVHS), and James Wang (DHS) at HSHacksIII. 
 ## License

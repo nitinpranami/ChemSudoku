@@ -385,7 +385,7 @@ public class Sudoku{
                     
             public void actionPerformed(ActionEvent e) {
             	retrievedAnswer = "";
-            
+                answer.setText("");
                 if(e.getSource() == userInput){
                     userInputString = userInput.getText(); 
                     userInput.setText("");

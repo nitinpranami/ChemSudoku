@@ -2,8 +2,9 @@
   <content>
   <![CDATA[
 # ${1:Sudo-Chem}
+## Introduction
 
-Like your ordinary Sudoku game, this project requires you to answer a chemistry question if you insert the wrong value. 
+Unlike your ordinary Sudoku game, this project requires you to answer a chemistry question if you insert the wrong value. 
 Incorrect answers would result in further point deductions while correct answers will result in positive impact on your score. 
 
 ## Installation and Usage
@@ -12,6 +13,8 @@ Java is required to run Chem-Sudoku. Download the entire repository, and run Sud
 
 ## Credits
 Created by Mohini Banerjee (MVHS), Shirlyn Tang (MVHS), Tiffany Tsang (MVHS), and James Wang (DHS) at HSHacksIII. 
+MVHS: Monta Vista High School, Cupertino CA
+DHS: Dublin High School, Dublin CA
 ## License
 The MIT License
 
